@@ -20,38 +20,45 @@ imshow(grayImage);
 axis on;
 title('Grayscale Image', 'FontSize', fontSize);
 
-% Display the edge detected image.
-% laplaceImage = imread('Camp18Orthomosaic2Laplace.png');
-laplaceImage = imread('ECHO_N_1_laplace04.png');
+% % Display the edge detected image.
+% % laplaceImage = imread('Camp18Orthomosaic2Laplace.png');
+% laplaceImage = imread('cliff_gray_lap_color_erase.jpeg');
+% subplot(2, 3, 3);
+% imshow(laplaceImage);
+% axis on;
+% title('Laplacian Edge Detection', 'FontSize', fontSize);
+
+% implement edge detection
+laplaceImage=edge(grayImage,"canny",.2);
 subplot(2, 3, 3);
 imshow(laplaceImage);
 axis on;
-title('Laplacian Edge Detection', 'FontSize', fontSize);
+title('Edge Detection', 'FontSize', fontSize);
 
-% Compute and display the histogram.
-subplot(2, 3, 4);
-imhist(laplaceImage);
-ylim([0 350000]);
-grid on;
-ylabel('Intensity');
-xlabel('Grayscale Range')
-xl = get(gca,'XLabel');
-set(xl,'Position',get(xl,'Position') - [0 60000 0])
+% % Compute and display the histogram.
+% subplot(2, 3, 4);
+% imhist(grayImage);
+% ylim([0 350000]);
+% grid on;
+% ylabel('Intensity');
+% xlabel('Grayscale Range')
+% xl = get(gca,'XLabel');
+% set(xl,'Position',get(xl,'Position') - [0 60000 0])
 
 % Compute and display binary image
-subplot(2, 3, 5);
-binary = imbinarize(laplaceImage);
-% binary = imbinarize (laplaceImage, 0.15);
-% why not use auto-generated value?
-% potentially we play around with the threshold value and see how the results
-% differ?
-imshow(binary);
-axis on;
-title('Binary Image', 'Fontsize', fontSize);
+% subplot(2, 3, 5);
+% binary = imbinarize(grayImage);
+% % binary = imbinarize (laplaceImage, 0.15);
+% % why not use auto-generated value?
+% % potentially we play around with the threshold value and see how the results
+% % differ?
+% imshow(binary);
+% axis on;
+% title('Binary Image', 'Fontsize', fontSize);
 
 % Reduce noise
-subplot(2, 3, 6);
-refined = bwareaopen(binary,10);
+subplot(2, 3, 4);
+refined = bwareaopen(laplaceImage,50);
 % 10 is currently number of pixels -- <10 means pixels are counted as noise
 imshow(refined);
 axis on;
@@ -78,10 +85,10 @@ cells2 = reshape(cells,[],1);
     % [] automatically creates column length
 % Initialize array to store fracture percentage
 % ratio = zeros(5829,1);
-ratio = zeros(5814,1); % CHANGE (length of cells2)
+ratio = zeros(length(cells2),1);
 % Iterate over whole array
 %for i = 1:5829
-for i = 1:5814 % CHANGE (length of cells2)
+for i = 1:length(cells2)
     % i must equal the length of the column when units are adjusted
     j = cells2{i,1};
     % Calculate number of white and black pixels
@@ -94,21 +101,22 @@ end
 
 % Reshape array back to original shape
 % ratio2 = reshape(ratio,67,87);
-ratio2 = reshape(ratio, 57, 102); % CHANGE (dimensions of 'cells')
+ratio2 = reshape(ratio, height(cells), length(cells)); 
 
 % Convert array to image
 fractureDensity = mat2gray(ratio2);
-figure(2)
+ax5=subplot(2, 3, 5);
 imshow(fractureDensity);
-colormap jet;
+colormap(ax5,jet);
 colorbar;
+title(ax5,'Fracture Density','FontSize', fontSize)
 % Enlarge figure to full screen.
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
+%set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 % Give a name to the title bar.
-set(gcf, 'Name', 'Fracture Density', 'NumberTitle', 'Off');
+%set(gcf, 'Name', 'Fracture Density', 'NumberTitle', 'Off');
 
 % Orientation data
-figure(3)
+ax6=subplot(2, 3, 6);
 cc=bwconncomp(refined);
     % can add another argument to alter the desired connectivity
 stats=regionprops('table', cc,'orientation');
@@ -116,8 +124,9 @@ orientations = table2array(stats);
 histogram(orientations, 180);
 xlabel('Angle (degrees)');
 ylabel('Number of Fractures');
+title(ax6,'Orientation of Fractures','FontSize', fontSize)
 % Enlarge figure to full screen.
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
+%set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 % Give a name to the title bar.
-set(gcf, 'Name', 'Orientation of Fractures', 'NumberTitle', 'Off');
+%set(gcf, 'Name', 'Orientation of Fractures', 'NumberTitle', 'Off');
 
