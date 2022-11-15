@@ -1,0 +1,6 @@
+#Mac clean-up
+*.ds_store
+
+*.csv
+*.jpg
+*.jpeg
