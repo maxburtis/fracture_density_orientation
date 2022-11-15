@@ -1,6 +1,6 @@
 # fracture_density_orientation
 ## Juneau Icefield Fracture Density and Orientation Mapping Project 
-To run this code download the following files:
+To run this code clone the repo or download the following files:
   * 'FractureProcessing.m'
   * 'mat2tiles.m'
 
