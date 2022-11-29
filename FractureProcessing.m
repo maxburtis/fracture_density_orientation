@@ -2,7 +2,7 @@ fontSize = 20;
 
 % Read in image.
 figure(1)
-colorImage = imread('cliff_rgb.jpeg');
+colorImage = imread('DJI_0133cropped.jpg');
 % colorImage = imread('Camp18Orthomosaic2.png');
 subplot(2,3,1);
 imshow(colorImage);
@@ -12,6 +12,7 @@ title('Orthomosaic', 'FontSize', fontSize);
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 % Give a name to the title bar.
 set(gcf, 'Name', 'Image Processing', 'NumberTitle', 'Off');
+set(gca,'XTick',[],'YTick',[])
 
 % Convert to grayscale
 grayImage = rgb2gray(colorImage);
@@ -19,6 +20,7 @@ subplot(2, 3, 2);
 imshow(grayImage);
 axis on;
 title('Grayscale Image', 'FontSize', fontSize);
+set(gca,'XTick',[],'YTick',[])
 
 % % Display the edge detected image.
 % % laplaceImage = imread('Camp18Orthomosaic2Laplace.png');
@@ -29,11 +31,12 @@ title('Grayscale Image', 'FontSize', fontSize);
 % title('Laplacian Edge Detection', 'FontSize', fontSize);
 
 % implement edge detection
-laplaceImage=edge(grayImage,"canny",.2);
+laplaceImage=edge(grayImage,"canny",.3);
 subplot(2, 3, 3);
 imshow(laplaceImage);
 axis on;
 title('Edge Detection', 'FontSize', fontSize);
+set(gca,'XTick',[],'YTick',[])
 
 % % Compute and display the histogram.
 % subplot(2, 3, 4);
@@ -63,6 +66,7 @@ refined = bwareaopen(laplaceImage,50);
 imshow(refined);
 axis on;
 title('Noise Reduction', 'Fontsize', fontSize);
+set(gca,'XTick',[],'YTick',[])
 
 % Calculate percent fracture of each square meter of the image
     % why a square meter? is this the best unit of space to use? 
@@ -76,7 +80,7 @@ title('Noise Reduction', 'Fontsize', fontSize);
 % MATLAB Central File Exchange. Retrieved April 9, 2020.
 
 % cells = mat2tiles(refined,[54,54]);
-cells = mat2tiles(refined,[54, 54]); % CHANGE (# of pixels in 2m)
+cells = mat2tiles(refined,[64, 64]); % CHANGE (# of pixels in 4m)
 % Reshape array to one column
 % cells2 = reshape(cells,5829,1);
 % cells2 = reshape(cells,5814,1);
@@ -108,7 +112,10 @@ fractureDensity = mat2gray(ratio2);
 ax5=subplot(2, 3, 5);
 imshow(fractureDensity);
 colormap(ax5,jet);
-colorbar;
+c=colorbar(ax5,'YTickLabel', num2cell(0:10:100));
+c.Location='southoutside';
+c.Label.String = 'Fractured % of each 16m^2 Cell'; %CHANGE
+c.Label.FontSize=12;
 title(ax5,'Fracture Density','FontSize', fontSize)
 % Enlarge figure to full screen.
 %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
