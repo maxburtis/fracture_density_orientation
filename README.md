@@ -12,4 +12,4 @@ After this, line #76 ```cells = mat2tiles(refined,[54, 54])``` will need to be u
 
 Then run the script and view the figures. An example output is provided below: 
 
-![example](https://github.com/maxburtis/fracture_density_orientation/blob/main/example.jpg)
+![example](https://github.com/maxburtis/fracture_density_orientation/blob/main/ex_results.jpg)
